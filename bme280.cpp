@@ -1,4 +1,4 @@
-#include "BME280.hpp"
+#include "bme280.hpp"
 
 #include "mbed_trace.h"
 #if defined(MBED_CONF_MBED_TRACE_ENABLE)
