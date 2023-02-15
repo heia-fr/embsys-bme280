@@ -17,7 +17,7 @@ void BME280::internal_init()
     char cmd[18] = {0};
     wait_us(5000);  
     
-    tr_debug("\033[0m\033[2J\033[H ++++ BME-P register's ++++\r\n");
+    //tr_debug("\033[0m\033[2J\033[H ++++ BME-P register's ++++\r\n");
      
     // ctrl_hum
     cmd[0] = 0xF2;
@@ -31,22 +31,26 @@ void BME280::internal_init()
     cmd[1] = 0x27;
     _bme280.write(_address, cmd, 2);
  
-    cmd[0] = 0xF5;                  // config
-    cmd[1] = 0xa0;                  // Standby 1000ms, Filter off
+    // config
+    cmd[0] = 0xF5;
+    // Standby 1000ms, Filter off
+    cmd[1] = 0xa0;   
     _bme280.write(_address, cmd, 2);
     
     // sensor registers
-    tr_debug("chip_id = 0x%x\n\n", _chip_id);
+    //tr_debug("chip_id = 0x%x\n\n", _chip_id);
      
-    cmd[0] = 0x88;                  // read dig_T calibration regs
+    // read dig_T calibration regs
+    cmd[0] = 0x88;                  
     _bme280.write(_address, cmd, 1);
     _bme280.read(_address, cmd, 6); 
     _dig_T1 = (cmd[1] << 8) | cmd[0];
     _dig_T2 = (cmd[3] << 8) | cmd[2];
     _dig_T3 = (cmd[5] << 8) | cmd[4]; 
-    tr_debug("Temp Cal reg's:\nT1 = 0x%x\nT2 = 0x%x\nT3 = 0x%x\n", _dig_T1, _dig_T2, _dig_T3);
+    //tr_debug("Temp Cal reg's:\nT1 = 0x%x\nT2 = 0x%x\nT3 = 0x%x\n", _dig_T1, _dig_T2, _dig_T3);
     
-    cmd[0] = 0x8E;                  // read dig_P calibration regs
+    // read dig_P calibration regs
+    cmd[0] = 0x8E;                  
     _bme280.write(_address, cmd, 1);
     _bme280.read(_address, cmd, 18); 
     _dig_P1 = (cmd[ 1] << 8) | cmd[ 0];
@@ -58,8 +62,8 @@ void BME280::internal_init()
     _dig_P7 = (cmd[13] << 8) | cmd[12];
     _dig_P8 = (cmd[15] << 8) | cmd[14];
     _dig_P9 = (cmd[17] << 8) | cmd[16];    
-    tr_debug("Pressure Cal reg's:\nP1 = 0x%x\nP2 = 0x%x\nP3 = 0x%x\nP4 = 0x%x", _dig_P1, _dig_P2, _dig_P3, _dig_P4);
-    tr_debug("P5 = 0x%x\nP6 = 0x%x\nP7 = 0x%x\nP8 = 0x%x\nP9 = 0x%x\n", _dig_P5, _dig_P6, _dig_P7, _dig_P8, _dig_P9);
+    //tr_debug("Pressure Cal reg's:\nP1 = 0x%x\nP2 = 0x%x\nP3 = 0x%x\nP4 = 0x%x", _dig_P1, _dig_P2, _dig_P3, _dig_P4);
+    //tr_debug("P5 = 0x%x\nP6 = 0x%x\nP7 = 0x%x\nP8 = 0x%x\nP9 = 0x%x\n", _dig_P5, _dig_P6, _dig_P7, _dig_P8, _dig_P9);
     
     if (_chip_id == 0x60) {   
         // Only BME280 has Humidity 
@@ -77,8 +81,8 @@ void BME280::internal_init()
         _dig_H4 = (cmd[4] << 4) | (cmd[5] & 0x0f);
         _dig_H5 = (cmd[6] << 4) | ((cmd[5]>>4) & 0x0f);
         _dig_H6 = cmd[7];    
-        tr_debug("Humidity Cal reg's:\nH1 = 0x%x\nH2 = 0x%x\nH3 = 0x%x", _dig_H1, _dig_H2, _dig_H3);
-        tr_debug("H4 = 0x%x\nH5 = 0x%x\nH6 = 0x%x\n", _dig_H4, _dig_H5, _dig_H6);
+        //tr_debug("Humidity Cal reg's:\nH1 = 0x%x\nH2 = 0x%x\nH3 = 0x%x", _dig_H1, _dig_H2, _dig_H3);
+        //tr_debug("H4 = 0x%x\nH5 = 0x%x\nH6 = 0x%x\n", _dig_H4, _dig_H5, _dig_H6);
     }
 } 
 
@@ -114,9 +118,9 @@ int BME280::chipID()
 
 float BME280::getTemperature()
 {
-    if (! chipID() == 0) {      
+    if (chipID() == 0) {      
       // check if sensor is present
-      if (! initialize() == 0) {
+      if (initialize() == 0) {
         return kInvalidTempValue;
       }
     }     
@@ -146,9 +150,9 @@ float BME280::getTemperature()
  
 float BME280::getPressure()
 {
-    if (! chipID() == 0) {      
+    if (chipID() == 0) {      
       // check if sensor is present
-      if (! initialize() == 0) {
+      if (initialize() == 0) {
         return kInvalidPressureValue;
       }
     }
@@ -189,9 +193,9 @@ float BME280::getPressure()
  
 float BME280::getHumidity()
 {    
-    if (! chipID() == 0) {      
+    if (chipID() == 0) {      
       // check if sensor is present
-      if (! initialize() == 0) {
+      if (initialize() == 0) {
         return kInvalidHumValue;
       }
     }
